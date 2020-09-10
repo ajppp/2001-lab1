@@ -1,0 +1,3 @@
+kmp.py: to be imported by main, can also be used by itself
+main.py: runs the biopython search and kmp search
+reference.py: the kmp code i modified hopefully enough so it doesnt look like plagiarism
