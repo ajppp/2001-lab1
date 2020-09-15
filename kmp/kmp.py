@@ -1,7 +1,4 @@
-import sys
-from datetime import datetime
-from Bio import SeqIO
-from Bio import Seq
+import sys, time
 
 def preprocessNeedle(needle, N, processedNeedle):
     """
@@ -24,17 +21,18 @@ def preprocessNeedle(needle, N, processedNeedle):
             # leftCursor bumped down due to mismatch
             # basically leftCursor index 0 of needle
             if leftCursor == 0:
-                processedNeedle[rightCursor] = 0 # update pairLength = 0
                 rightCursor += 1
             # mismatch but leftCursor != 0
             else:
                 leftCursor = processedNeedle[leftCursor - 1] # bump down leftCursor based on last stored pairLength/leftCursor value in processedNeedle
 
-def KMPSearch(needle, haystack):
+def KMPhn(needle, haystack):
+    """O(h+n) cuz preprocessing inside"""
     H = len(haystack)
     N = len(needle)
     cursorN = 0
     cursorH = 0
+    indices = []
     
     processedNeedle = [0]*N # init processedNeedle (see preprocessNeedle for definition of processedNeedle
     preprocessNeedle(needle, N, processedNeedle)
@@ -45,12 +43,8 @@ def KMPSearch(needle, haystack):
         if needle[cursorN] == haystack[cursorH]:
             cursorH += 1
             cursorN += 1
-        # needle found
-        if cursorN == N:
-            print(f'Pattern found at index: {cursorH - cursorN}')
-            cursorN = processedNeedle[cursorN - 1] # bump cursorN to last knownindex of processedNeedle, which is the longest pairLength
-        # confirm still in haystack and mismatch occurs
-        elif cursorH < H and needle[cursorN] != haystack[cursorH]:
+        # mismatch occurs
+        else:
             # either no match found at all so far OR
             # cursorN bumped down to index 0
             # basically as long as cursorN is at index 0
@@ -58,20 +52,35 @@ def KMPSearch(needle, haystack):
                 cursorH += 1 # move cursor in haystack only
             else:
                 cursorN = processedNeedle[cursorN - 1] # bump cursorN to last knownindex of processedNeedle, which is the longest pairLength
+        if cursorN == N:
+            indices.append(cursorH - N)
+            cursorN = processedNeedle[cursorN - 1] # bump cursorN to last knownindex of processedNeedle, which is the longest pairLength
+    return indices
 
-# call if u wan to test on ur own needle and haystack
-# def main():
-    # haystack = sys.argv[1]
-    # needle = sys.argv[2]
- #   needle = sys.argv[1]
- #   haystack = next(SeqIO.parse(sys.argv[2], "fasta")).seq
-    # print(f'haystack: {haystack}\nneedle: {needle}')
-
- #   start = datetime.now()
- ##   KMPSearch(needle, haystack)
- #   end = datetime.now()
- #   duration = end - start
- #   print(duration.total_seconds())
-
-# uncomment if u wanna call ur own needle haystack
-# main()
+def KMPh(needle, haystack, preprocessedNeedle):
+    """O(h) only, u gotta preprocess urself outside then use this"""
+    H = len(haystack)
+    N = len(needle)
+    cursorN = 0
+    cursorH = 0
+    indices = []
+    
+    # iterate through haystack
+    while cursorH < H:
+        # if match found continue searching
+        if needle[cursorN] == haystack[cursorH]:
+            cursorH += 1
+            cursorN += 1
+        # mismatch occurs
+        else:
+            # either no match found at all so far OR
+            # cursorN bumped down to index 0
+            # basically as long as cursorN is at index 0
+            if cursorN == 0:
+                cursorH += 1 # move cursor in haystack only
+            else:
+                cursorN = processedNeedle[cursorN - 1] # bump cursorN to last knownindex of processedNeedle, which is the longest pairLength
+        if cursorN == N:
+            indices.append(cursorH - N)
+            cursorN = processedNeedle[cursorN - 1] # bump cursorN to last knownindex of processedNeedle, which is the longest pairLength
+    return indices

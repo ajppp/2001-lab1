@@ -127,7 +127,7 @@ The improvement to a linear time complexity in the worst case from $\mathcal{O}(
 \begin{figure}[H]
   \centering
   \begin{minipage}[b]{0.49\textwidth}
-    \includegraphics[width=\textwidth]{images/graph-with-axes.png}
+    \includegraphics[width=\textwidth]{images/graph.png}
     \caption{Graph showing difference in performance}
     \label{fig:graph}
   \end{minipage}
@@ -139,4 +139,6 @@ The improvement to a linear time complexity in the worst case from $\mathcal{O}(
   \end{minipage}
 \end{figure}
 
-It can be observed that Brute Force often takes a shorter amount of time compared to KMP even though we have shown that KMP should theoretically be faster. However, this worst case scenario would occur only when the comparison for the substring is the same until the last character. For example, a needle of ``AAAC" and a haystack filled completely with `A's. However, this is very unlikely to occur in reality. On average, the number of comparisons that would have to be done every time the character shifts is much less than $n$. This explains why Brute Force may outperform KMP on certain occasions, since the KMP algorithm would still have a time complexity of $\mathcal{O}(n+m)$, even in the best case.
+% It can be observed that Brute Force often takes a shorter amount of time compared to KMP even though we have shown that KMP should theoretically be faster. However, this worst case scenario would occur only when the comparison for the substring is the same until the last character. For example, a needle of ``AAAC" and a haystack filled completely with `A's. However, this is very unlikely to occur in reality. On average, the number of comparisons that would have to be done every time the character shifts is much less than $n$. This explains why Brute Force may outperform KMP on certain occasions, since the KMP algorithm would still have a time complexity of $\mathcal{O}(n+m)$, even in the best case.
+
+As is consistent with our analysis, KMP takes a shorter amount of time compared to brute force. In our comparison, we included the time it takes to preprocess the data and KMP is still faster. This is because KMP which has a time complexity of $\Theta(h+n)$ which is linear would be faster than brute force which has a time complexity of $\Theta(hn)$
