@@ -42,10 +42,10 @@ The variables \mintinline{Python}{haystackIdx} and \mintinline{Python}{needleIdx
 Let $h, n$ be the length of the haystack and the needle respectively. For a complete search, we would need to go through all characters of the haystack. This means that we need to check $h - n + 1$ substrings. In the inner loop, we would need to compare each character of the needle to each character of the substring of the haystack.
 
 \subsubsection*{Best Case Time Complexity}
-In the best case scenario, in the inner loop, the first character is never the same as the first character of the substring, i.e. the first character of the needle does not exist in the haystack. This results in a time complexity of $\mathcal{O}(1)$ in each inner loop, and an overall time complexity of $\mathcal{O}(h)$.
+In the best case scenario, in the inner loop, the first character is never the same as the first character of the substring, i.e. the first character of the needle does not exist in the haystack. This results in a time complexity of $\mathcal{O}(1)$ in each inner loop, and an overall time complexity of $\mathcal{O}(h-n)$.
  
 \subsubsection*{Average Case Time Complexity}
-In the case of searching for DNA patterns, there are only four available characters to choose from. The probability of a match is $\frac{1}{4}$. This can be modelled by a geometric distribution $P(X=r) = p(1-p)^(r-1)$, where $X$ is the random variable denoting the number of comparisons that have been after encountering the first mismatch. The probability of having a mismatch is given by $p = 3/4$ and the expected number of mismatches is $E(X) = \frac{1}{p} = \frac{4}{3}$. The Brute Force makes these comparisons $h-n+1$ times. Hence, the average case time complexity can be given by $\frac{4}{3}(h-n+1)$, which is simplified to $\mathcal{O}(h-n)$.
+In the case of searching for DNA patterns, there are only four available characters to choose from. The probability of a match is $\frac{1}{4}$. This can be modelled by a geometric distribution $P(X=r) = p(1-p)^{r-1}$, where $X$ is the random variable denoting the number of comparisons that have been after encountering the first mismatch. The probability of having a mismatch is given by $p = 3/4$ and the expected number of mismatches is $E(X) = \frac{1}{p} = \frac{4}{3}$. The Brute Force makes these comparisons $h-n+1$ times. Hence, the average case time complexity can be given by $\frac{4}{3}(h-n+1)$, which is simplified to $\mathcal{O}(h-n)$.
 
 \subsubsection*{Worst Case Time Complexity}
 In the worst case, the Brute Force Algorithm would have to traverse through the entire length of the needle making the time complexity $\mathcal{O}(n)$. Hence, the worst case time complexity for brute force is $\mathcal{O}(h - n + 1)(n) = \mathcal{O}(hn)$. There is nothing to analyse for space complexity since we do not need to store any additional data since there is no preprocessing done.
@@ -89,7 +89,7 @@ In order to facilitate this, the substring first needs to be preprocessed to ide
 
 \subsection*{Python Implementation}
 
-The function shown in Figure \ref{fig:kmp_preprocessing} has \mintinline{Python}{processedNeedle} is the KMP lookup table. We calculate the value such that if the \mintinline{Python}{needle[leftCursor]} and \mintinline{Python}{needle[rightCursor]} matches, we increment \mintinline{Python}{leftCursor} and assigns this value to the \mintinline{Python}{processedNeedle}. If there is a mismatch and \mintinline{Python}{leftCursor} is pointing to the first character, we reinitialise it. This constructs an array storing the lengths of all prefix/suffix pairs in the needle. If a mismatch occurs at index $a$, \mintinline{Python}{processedNeedle[a - 1]} gives the index number of the needle that should be used to make the next comparison. 
+The function shown in Figure \ref{fig:kmp_preprocessing} generates \mintinline{Python}{processedNeedle}, which is the KMP lookup table. We calculate the value such that if the \mintinline{Python}{needle[leftCursor]} and \mintinline{Python}{needle[rightCursor]} matches, we increment \mintinline{Python}{leftCursor} and assign this value to the \mintinline{Python}{processedNeedle}, and then increment \mintinline{Python}{rightCursor}. If a mismatch occurs and \mintinline{Python}{leftCursor} is pointing to the first character, we reinitialise it. This constructs an array storing the lengths of all prefix/suffix pairs in the needle. If a mismatch occurs at index $a$, \mintinline{Python}{processedNeedle[a - 1]} gives the index number of the needle that should be used to make the next comparison. 
 
 \begin{figure}[H]
   \centering
@@ -118,7 +118,7 @@ Since the length of the haystack and needle are $h, n$ respectively, we would be
 \fi
 
 \subsubsection{Preprocessing Time}
-Since we do not need to do the comparison for those that are already matched, we only need to do one comparison for each character in the haystack. This means that the time complexity of the matching will be $\mathcal{O}(h)$. However, time is taken to do the preprocessing. This is done in $\mathcal{O}(n)$ time, because the preprocessing function traverses through the needle to calculate the value of prefix/suffix pairs. 
+Since we do not need to do the comparison for those that are already matched, we only need to do one comparison for each character in the haystack. This means that the time complexity of the matching will be $\mathcal{O}(h)$. However, time is taken to do the preprocessing. This is done in $\mathcal{O}(n)$ time, because the preprocessing function traverses through the needle to calculate the value of prefix/suffix pairs.
 
 \subsubsection{Time Complexity}
 Since the preprocessing and the matching happens linearly, the time complexity of the algorithm is $\mathcal{O}(h+n)$. In the given problem, the best case and worst case time complexity for KMP remains the same, because we want to find all occurrences of the needle in the haystack. Hence, the entire text needs to be traversed, even if a match has previously been found. This means that the best, worst, and average case time complexity remains $\mathcal{O}(h+n)$.
@@ -128,19 +128,19 @@ The improvement to a linear time complexity in the worst case from $\mathcal{O}(
 
 \section*{Empirical Analysis}
 
-As is consistent with our analysis, KMP takes a shorter amount of time compared to brute force in a realistic scenario. Despite the preprocessing time, the time cost  of $\mathcal{O}(h+n)$ would generally be more efficient than the worse case of Brute Force ($\mathcal{O}(hn)$).
+As is consistent with our analysis, KMP takes a shorter amount of time compared to Brute Force. Despite the preprocessing time, the time cost of $\mathcal{O}(h+n)$ is generally be more efficient than the worse case of Brute Force ($\mathcal{O}(hn)$).
 
 \begin{figure}[H]
   \centering
   \begin{minipage}[b]{0.49\textwidth}
-    \includegraphics[width=\textwidth]{images/brute-force-best.png}
+    \includegraphics[width=\textwidth]{images/brute-force-best.png} 
     \caption{Brute Force (best case): $\mathcal{O}(h)$ vs. KMP: $\mathcal{O}(h+n)$}
     \label{fig:bf_best}
   \end{minipage}
   \hfill
   \begin{minipage}[b]{0.49\textwidth}
-    \includegraphics[width=\textwidth]{images/brute-force-worst.png}
-    \caption{Brute Force (worst case): $\mathcal{O}(hn)$ vs. KMP: $\mathcal{O}(h+n)$}
+    \includegraphics[width=\textwidth]{images/brute-force-worst.png} 
+    \caption{Brute Force (worst case): ($\mathcal{O}(hn)$) vs. KMP}
     \label{fig:bf_worst}
   \end{minipage}
 \end{figure}
@@ -148,23 +148,26 @@ As is consistent with our analysis, KMP takes a shorter amount of time compared 
 \begin{figure}[H]
     \centering
     \begin{minipage}[b]{0.49\textwidth}
-    \includegraphics[width=\textwidth]{images/graph.png}
+    \includegraphics[width=\textwidth]{images/graph.png} 
     \caption{Performance of Brute Force compared to KMP in a realistic scenario}
     \label{fig:graph}
   \end{minipage}
 \end{figure}
 
 \noindent
-Despite this, KMP did not perform as well as this analysis may suggest. This may be because the worst case scenario for the Brute Force Algorithm only occurs in the specific case when $n$ comparisons have to be made for every character in the haystack. However, for this particular application in searching for a DNA pattern, the number of comparisons that have to be made would very likely be much less than $n$. This, coupled with the fact that the KMP Algorithm has to perform preprocessing steps on the needle is the reason that the two algorithms have performed so similarly. 
+KMP consistently outperforms Brute Force even though some of the improvements were minimal. It can be seen that the performance of Brute Force approaches that of KMP in its best case. Even though the performance of the Brute Force Algorithm is much worse than KMP in its worst case, this scenario is very unlikely to occur in realistic DNA substring searches. We conclude that KMP performs more consistenly, and is therefore more suited for this task.
 
+\iffalse
+This may be because the worst case scenario for the Brute Force Algorithm only occurs in the specific case when $n$ comparisons have to be made for every character in the haystack. However, for this particular application in searching for a DNA pattern, the number of comparisons that have to be made would very likely be much less than $n$. This, coupled with the fact that the KMP Algorithm has to perform preprocessing steps on the needle is the reason that the two algorithms have performed so similarly.
+\fi
 
 \nocite{geeksforgeeks_kmp}
 \nocite{wikipedia_2020}
 \nocite{geeksforgeeks_bf}
 
 \section*{References}
-
-\renewcommand\bibname{}
-\printbibliography
+% \newpage
+% \renewcommand\bibname{References}
+\printbibliography[heading=none]
 %bib here
 
