@@ -5,11 +5,18 @@
 % Preamble (document settings) -----------------------------------------------------------
 % Document type and font --
 \documentclass[10pt]{report}
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd{\chapter}{\if@openright\cleardoublepage\else\clearpage\fi}{}{}{}
+\makeatother
 \usepackage[utf8]{inputenc} %utf-8 encoding for ASCII symbols
 
 % insert packages here --
 \usepackage{float}          %for handling figures
 \usepackage{subcaption}
+
+\usepackage{caption}
+\captionsetup[figure]{name={Fig.}}
 
 \usepackage{graphicx}       %for handling images
 
@@ -26,15 +33,17 @@
 \usepackage{minted}
 \usemintedstyle{vs}       %to format code snippets
 
-\usepackage[
-backend=biber,
-style=apa,
-citestyle=apa
-]{biblatex}       %use the biblatex package
+% \usepackage{apacite}
+% \usepackage[
+%     backend=biber,
+%    style=apa,
+%     citestyle=apa   ]{biblatex}       %use the biblatex package
 
-\addbibresource{mybibfile1.bib}   %path to the bib file
-\addbibresource{mybibfile2.bib}
+% \addbibresource{rferences.bib}   %path to the bib file
 
+
+\usepackage{biblatex}
+\addbibresource{references.bib}
 
 \usepackage{hyperref}       % to create a linked table of contents
 \hypersetup{
@@ -60,7 +69,17 @@ citestyle=apa
 % Making title page
 \input{chapters/titlepage}
 
- %\chapter{Algorithm Used}     % Mention chapter title here
- \input{chapters/chapter01} % Link to the chapter tex file
+%\chapter{Algorithm Used}     % Mention chapter title here
+\input{chapters/chapter01} % Link to the chapter tex file
+%\bibliographystyle{}
+%\bibliography{references} % Pulls references from references.bib
+
+
+
+\newpage
+\input{chapters/contribution}
+
+
+
 
 \end{document}
